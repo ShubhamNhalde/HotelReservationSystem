@@ -1,36 +1,54 @@
-package www.bridgelabz.HotelReservationSystem;
+package www.bridgelabz.UC2;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Optional;
 
 public class HotelReservationSystem {
+	
+	ArrayList<Hotel> myHotelList = new ArrayList(); 
+	
 
-	static ArrayList<Hotel> HotelsList = new ArrayList<>();
+	public void addHotel() {
 
-	public static void view() {
-		for (Hotel i : HotelsList) {
-			System.out.println(i);
+		Hotel LakeWood = new Hotel("LakeWood", 110, 80, 90, 80, 3);
+
+		Hotel BridgeWood = new Hotel("BridgeWood", 160, 110, 50, 50, 4);
+
+		Hotel RidgeWood = new Hotel("RidgeWood", 220, 100, 150, 40, 5);
+
+		myHotelList.add(LakeWood);
+		myHotelList.add(BridgeWood);
+		myHotelList.add(RidgeWood);
+	}
+
+	
+	public void showHotelInfo() {
+
+		for (int i = 0; i < myHotelList.size(); i++) {
+			System.out.println(myHotelList.get(i));
 		}
 	}
 
-	public static void main(String[] args) {
+	
+	public void findCheapestHotelOne(String startDateRange, String endDateRange) {
 
-		Hotel LakeWood = new Hotel();
-		LakeWood.setHotelName("Lakewood");
-		LakeWood.setWeekDayRate(110);
-		HotelsList.add(LakeWood);
+		LocalDate startDate = LocalDate.parse(startDateRange, DateTimeFormatter.ofPattern("d-MMM-yyyy"));
+		LocalDate endDate = LocalDate.parse(endDateRange, DateTimeFormatter.ofPattern("d-MMM-yyyy"));
 
-		Hotel BridgeWood = new Hotel();
-		BridgeWood.setHotelName("BridgeWood");
-		BridgeWood.setWeekDayRate(160);
-		HotelsList.add(BridgeWood);
+		int numberOfDays = endDate.getDayOfMonth() - startDate.getDayOfMonth() + 1;
+		Optional<Hotel> cheapestHotel = this.myHotelList.stream()
+				.sorted(Comparator.comparing(Hotel::getWeekdayRegularRate)).findFirst();
+		Hotel hotel = new Hotel();
+		hotel.setHotelName(cheapestHotel.get().getHotelName());
+		hotel.setTotal(cheapestHotel.get().getWeekdayRegularRate() * numberOfDays);
 
-		Hotel RidgeWood = new Hotel();
-		RidgeWood.setHotelName("RidgeWood");
-		RidgeWood.setWeekDayRate(220);
-		HotelsList.add(RidgeWood);
+		System.out.println("HotelName :" + hotel.getHotelName());
 
-		view();
+		System.out.println("NumberOfDaysStayed * WeekdayRegularRate :" + hotel.getTotal() + "$");
 
 	}
-	
+
 }
